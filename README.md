@@ -46,6 +46,7 @@ The challenge JS contains Unicode whitespace characters (U+2003 etc.) as anti-bo
 | **Spectator** | Joins the lobby without answering |
 
 ### 🧠 AI Mode (Ollama)
+*- this may be broken, i am so bored to fix theses*
 
 When AI mode is selected, the bot uses a local LLM to find the quiz:
 
