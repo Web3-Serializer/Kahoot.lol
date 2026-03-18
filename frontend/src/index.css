@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body { margin:0; background:#09090b; color:#fafafa; font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-thumb { background:#222; border-radius:2px; }
+input,select,textarea { outline:none; }
+@keyframes fi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.ani { animation: fi .25s ease-out; }
