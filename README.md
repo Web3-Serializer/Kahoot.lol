@@ -2,7 +2,7 @@
 
 # ⚡ kahoot.lol
 
-**Reverse-engineered Kahoot game bot with a full-stack dashboard.**
+**Reverse-engineered Kahoot game with a full-stack dashboard.**
 
 Automated session handshake, multi-bot lobbying, AI-powered answer finding, reaction flooding, 2FA support, and more.
 
