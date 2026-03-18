@@ -30,7 +30,7 @@ The Kahoot session handshake was fully reverse-engineered from the browser WebSo
 6. Listen for game events, answer questions, send reactions
 ```
 
-The challenge JS contains Unicode whitespace characters (U+2003 etc.) as anti-bot measures, these are stripped before evaluation.
+The challenge JS contains Unicode whitespace characters (U+2003 etc.) as anti-bot measures. These are stripped before evaluation.
 
 ---
 
@@ -40,7 +40,7 @@ The challenge JS contains Unicode whitespace characters (U+2003 etc.) as anti-bo
 | Mode | Description |
 |------|-------------|
 | **Random** | Random answers for each question |
-| **AI** | Uses Ollama to guess quiz title → searches Kahoot API → auto-answers correctly |
+| **AI** | Uses Ollama to guess quiz title, searches Kahoot API, auto-answers correctly |
 | **Always First** | Always picks choice 0 |
 | **Always Last** | Always picks the last choice |
 | **Spectator** | Joins the lobby without answering |
@@ -76,10 +76,10 @@ START_QUIZ event received (Q1 text + answer choices)
 - Auto-reconnect on crash
 
 ### 💬 Reactions
-- **Flood** - spam reactions continuously with configurable speed (ms)
-- **React on Win** - send a reaction when answering correctly
-- **React on Lose** - send a reaction when answering wrong
-- **Celebrate** - spam reactions when the game ends
+- **Flood**: spam reactions continuously with configurable speed (ms)
+- **React on Win**: send a reaction when answering correctly
+- **React on Lose**: send a reaction when answering wrong
+- **Celebrate**: spam reactions when the game ends
 - All reactions support **🎲 Random** mode (picks a random emoji each time)
 - Available reactions: 👍 👏 😂 🤔 😮 ❤️
 
@@ -89,7 +89,7 @@ START_QUIZ event received (Q1 text + answer choices)
 - All bots receive the 2FA code simultaneously
 
 ### ⚙️ Advanced
-- Answer delay (min/max ms) (simulate human response time)
+- Answer delay (min/max ms) to simulate human response time
 - Join delay between bots
 - Per-bot scoreboard with score, rank, streak, W/L ratio
 - Live color-coded logs with timestamps
@@ -97,7 +97,7 @@ START_QUIZ event received (Q1 text + answer choices)
 
 ### 👤 User System
 - Token-based authentication (no password, no email)
-- Credit system (1 credit per bot per session)
+- Credit system: 1 credit per bot per session
 - Admin panel to manage users, add/remove credits, promote, delete
 
 ---
@@ -107,7 +107,7 @@ START_QUIZ event received (Q1 text + answer choices)
 ### Prerequisites
 - **Python 3.9+**
 - **Node.js 18+**
-- **Ollama** (optional, for AI mode) - [ollama.com](https://ollama.com)
+- **Ollama** (optional, for AI mode): [ollama.com](https://ollama.com)
 
 ### Windows
 
@@ -116,18 +116,18 @@ START_QUIZ event received (Q1 text + answer choices)
 # Double-click start.bat
 # OR manually:
 
-# Terminal 1 - Backend
+# Terminal 1 (Backend)
 cd backend
 pip install -r requirements.txt
 mkdir data
 uvicorn app.main:app --reload --port 8000
 
-# Terminal 2 - Frontend
+# Terminal 2 (Frontend)
 cd frontend
 npm install
 npm run dev
 
-# Terminal 3 - Create admin (once)
+# Terminal 3 (Create admin, once)
 curl -X POST http://localhost:8000/api/admin/init
 ```
 
@@ -165,7 +165,7 @@ kahoot-dashboard/
 │   │   ├── auth.py              # JWT authentication
 │   │   └── database.py          # SQLAlchemy models (SQLite)
 │   ├── libs/
-│   │   ├── __init__.py          # KahootBot - reverse-engineered wrapper
+│   │   ├── __init__.py          # KahootBot reverse-engineered wrapper
 │   │   ├── manager.py           # Multi-bot orchestration
 │   │   └── ollama.py            # Local LLM integration
 │   ├── requirements.txt
@@ -191,8 +191,8 @@ kahoot-dashboard/
 ### Auth
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Create account → returns access token |
-| POST | `/api/auth/login` | Login with token → returns JWT |
+| POST | `/api/auth/register` | Create account, returns access token |
+| POST | `/api/auth/login` | Login with token, returns JWT |
 | GET | `/api/user/me` | Current user info |
 
 ### Game
@@ -258,9 +258,9 @@ kahoot-dashboard/
 The challenge JS returned by `/reserve/session/` contains an obfuscated decode function with an arithmetic offset expression. Kahoot injects Unicode whitespace (U+2003 em-space, etc.) into the expression as anti-bot measures. The offset is evaluated using a safe AST walker, and the decode cipher runs `((charCode * position + offset) % 77) + 48` on each character. The result is XOR'd with the base64-decoded session token header to produce the WebSocket connection token.
 
 ### CometD Protocol
-The WebSocket uses CometD (Bayeux) protocol. The exact message sequence matters, the browser sends two `/meta/connect` messages before login, with specific `advice` and `ack` values. The login content must be `"{}"` (empty JSON string), and a second controller message with `{"usingNamerator": false}` must follow.
+The WebSocket uses CometD (Bayeux) protocol. The exact message sequence matters: the browser sends two `/meta/connect` messages before login, with specific `advice` and `ack` values. The login content must be `"{}"` (empty JSON string), and a second controller message with `{"usingNamerator": false}` must follow.
 
-### Message IDs
+### Received Events
 | ID | Event | Description |
 |----|-------|-------------|
 | 1 | GET_READY | Countdown before question |
@@ -270,11 +270,17 @@ The WebSocket uses CometD (Bayeux) protocol. The exact message sequence matters,
 | 9 | START_QUIZ | Quiz started (Q1 data + quizQuestionAnswers) |
 | 14 | USERNAME_ACCEPTED | Player name confirmed |
 | 17 | RECOVERY_DATA | Game state (gameApiId, avatar, etc.) |
-| 47 | - | Send reaction |
-| 50 | SUBMIT_2FA | Submit two-factor sequence |
 | 51 | 2FA_INCORRECT | Wrong 2FA code |
 | 52 | 2FA_CORRECT | 2FA accepted |
 | 53 | RESET_2FA | 2FA required |
+
+### Sent Messages
+| ID | Action | Description |
+|----|--------|-------------|
+| 16 | INIT | Send `{"usingNamerator": false}` after login |
+| 45 | ANSWER | Submit answer `{"type": "quiz", "choice": N, "questionIndex": N}` |
+| 47 | REACTION | Send reaction `{"reactionType": "ThumbsUp"}` |
+| 50 | SUBMIT_2FA | Submit 2FA sequence `{"gameId": pin, "sequence": [0,1,2,3]}` |
 
 ---
 
