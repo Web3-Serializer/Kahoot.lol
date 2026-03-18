@@ -299,7 +299,7 @@ The WebSocket uses CometD (Bayeux) protocol. The exact message sequence matters:
 
 ## Disclaimer
 
-This project is for **educational and research purposes only**. It demonstrates WebSocket reverse engineering, CometD protocol analysis, and full-stack development. Use responsibly.
+This project is for **educational and research purposes only**. It demonstrates WebSocket reverse engineering, CometD protocol analysis, and full-stack development. Use responsibly. (annoying teachers is authorized 🦉)
 
 ---
 
