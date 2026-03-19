@@ -189,13 +189,6 @@ kahoot-dashboard/
 
 ## API Reference
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create account, returns access token |
-| POST | `/api/auth/login` | Login with token, returns JWT |
-| GET | `/api/user/me` | Current user info |
-
 ### Game
 | Method | Endpoint | Description |
 |--------|----------|-------------|
