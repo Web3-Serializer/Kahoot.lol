@@ -1,4 +1,5 @@
-const API = '/api';
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+
 const h = (): Record<string, string> => {
   const jwt = localStorage.getItem('jwt');
   return { 'Content-Type': 'application/json', ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}) };
